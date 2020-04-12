@@ -11,10 +11,11 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-cdk": "1.32.2",
     "@aws-cdk/assert": "1.32.2",
+    "@types/aws-lambda": "^8.10.48",
     "@types/jest": "^24.0.22",
     "@types/node": "10.17.5",
+    "aws-cdk": "1.32.2",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.1.0",
@@ -22,10 +23,12 @@
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.32.2",
+    "@aws-cdk/aws-dynamodb": "^1.32.2",
     "@aws-cdk/aws-lambda": "^1.32.2",
     "@aws-cdk/aws-sns": "1.32.2",
     "@aws-cdk/aws-sns-subscriptions": "1.32.2",
     "@aws-cdk/aws-sqs": "1.32.2",
-    "@aws-cdk/core": "1.32.2"
+    "@aws-cdk/core": "1.32.2",
+    "cdk-dynamo-table-viewer": "^3.1.2"
   }
 }
