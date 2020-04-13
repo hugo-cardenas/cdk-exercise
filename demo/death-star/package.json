@@ -1,0 +1,27 @@
+{
+  "name": "death-star",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently 'nodemon build/index.js' 'npm run build:dev'",
+    "build": "tsc",
+    "build:dev": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "helmet": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/helmet": "0.0.45",
+    "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.4",
+    "typescript": "^3.8.3"
+  }
+}
