@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from '@aws-cdk/core';
-import { InfraStack } from '../lib/infra-stack';
+import "source-map-support/register";
+import * as cdk from "@aws-cdk/core";
+import { ApplicationStack } from "../lib/application-stack";
+import { PipelineStack } from "../lib/pipeline-stack";
+import { resolveAppStackName, resolveCommonStackName } from "../utils/config";
+import { IamStack } from "../lib/iam/iam-stack";
 
 const app = new cdk.App();
-new InfraStack(app, 'InfraStack');
+
+new IamStack(app, resolveCommonStackName("IAM"));
+new PipelineStack(app, resolveCommonStackName("Pipeline"));
+new ApplicationStack(app, resolveAppStackName("DeathStar", "staging"));
