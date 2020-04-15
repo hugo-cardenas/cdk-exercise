@@ -2,4 +2,4 @@ interface User {
   name: string;
 }
 
-export const users: User[] = [{ name: "UserFoo" }, { name: "UserBar" }];
+export const users: User[] = [{ name: "Groucho" }, { name: "Harpo" }];

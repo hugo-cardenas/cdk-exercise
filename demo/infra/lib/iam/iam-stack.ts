@@ -8,17 +8,24 @@ export class IamStack extends cdk.Stack {
     super(scope, id, props);
 
     const developerUserGroup = new iam.Group(this, "DeveloperUserGroup");
-    const developerUsers = users.map(
-      (user) =>
-        new iam.CfnUser(this, `DeveloperUser-${user.name}`, {
+    users.map(
+      (user) => {
+        const consolePassword = new cdk.CfnParameter(this, `ConsolePassword-${user.name}`)
+        const cfnUser = new iam.CfnUser(this, `DeveloperUser-${user.name}`, {
+          userName: `DeveloperUser-${user.name}`,
           groups: [developerUserGroup.groupName],
-          loginProfile: {},
+          loginProfile: {
+            password: consolePassword.valueAsString,
+            passwordResetRequired: true
+          }
         })
+        const key = new iam.CfnAccessKey(this, `AccessKey-${cfnUser.userName}`, { userName: cfnUser.userName! });
+        key.addDependsOn(cfnUser)
+        new cdk.CfnOutput(this, `AccessKeyOutput-${cfnUser.userName}`, {
+          value: key.attrSecretAccessKey
+        })
+      }
     );
-
-    developerUsers.forEach((user) => {
-      new iam.CfnAccessKey(this, "AccessKey", { userName: user.userName! });
-    });
 
     const adminRole = new iam.Role(this, "AdminRole", {
       // TODO This should be restricted with a Network whitelist?
@@ -28,14 +35,14 @@ export class IamStack extends cdk.Stack {
       ],
     });
 
-    // const ecrAccessPolicy = new iam.ManagedPolicy(
-    //   this,
-    //   "EcrDeveloperAccess",
-    //   {}
-    // );
-
-    // developerUserGroup.addManagedPolicy(
-    //   new iam.ManagedPolicy(this, "AdministratorAccess", {})
-    // );
+    developerUserGroup.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        "sts:AssumeRole"
+      ],
+      resources: [
+        adminRole.roleArn
+      ]
+    }))
   }
 }
