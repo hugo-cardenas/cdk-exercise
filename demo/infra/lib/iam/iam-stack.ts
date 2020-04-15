@@ -9,15 +9,24 @@ export class IamStack extends cdk.Stack {
 
     const developerUserGroup = new iam.Group(this, "DeveloperUserGroup");
     const developerUsers = users.map(
-      (user) => new iam.User(this, `DeveloperUser-${user.name}`)
+      (user) =>
+        new iam.CfnUser(this, `DeveloperUser-${user.name}`, {
+          groups: [developerUserGroup.groupName],
+          loginProfile: {},
+        })
     );
-    developerUsers.forEach((iamUser) => developerUserGroup.addUser(iamUser));
+
+    developerUsers.forEach((user) => {
+      new iam.CfnAccessKey(this, "AccessKey", { userName: user.userName! });
+    });
 
     const adminRole = new iam.Role(this, "AdminRole", {
       // TODO This should be restricted with a Network whitelist?
       assumedBy: new iam.AccountPrincipal(Stack.of(this).account),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")]
-    })
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess"),
+      ],
+    });
 
     // const ecrAccessPolicy = new iam.ManagedPolicy(
     //   this,
