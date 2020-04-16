@@ -1,4 +1,4 @@
-# cdk-exercises
+# infra-exercises
 
 Playground for practicing and learning infrastructure as code with AWS.
 
