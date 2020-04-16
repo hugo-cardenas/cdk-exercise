@@ -2,6 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as iam from "@aws-cdk/aws-iam";
 import { users } from "./users";
 import { Stack } from "@aws-cdk/core";
+import { randomString } from "../../utils/string";
 
 export class IamStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -10,15 +11,19 @@ export class IamStack extends cdk.Stack {
     const developerUserGroup = new iam.Group(this, "DeveloperUserGroup");
     users.map(
       (user) => {
-        const consolePassword = new cdk.CfnParameter(this, `ConsolePassword-${user.name}`)
+        const consolePassword = randomString(20)
         const cfnUser = new iam.CfnUser(this, `DeveloperUser-${user.name}`, {
           userName: `DeveloperUser-${user.name}`,
           groups: [developerUserGroup.groupName],
           loginProfile: {
-            password: consolePassword.valueAsString,
+            password: consolePassword,
             passwordResetRequired: true
           }
         })
+        new cdk.CfnOutput(this, `ConsolePassword-${cfnUser.userName}`, {
+          value: consolePassword
+        })
+
         const key = new iam.CfnAccessKey(this, `AccessKey-${cfnUser.userName}`, { userName: cfnUser.userName! });
         key.addDependsOn(cfnUser)
         new cdk.CfnOutput(this, `AccessKeyOutput-${cfnUser.userName}`, {
