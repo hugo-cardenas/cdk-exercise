@@ -42,7 +42,9 @@ export class ServerlessPipelineStack extends cdk.Stack {
             new codepipelineActions.GitHubSourceAction({
               actionName: "GithubSource",
               output: sourceOutput,
+              // TODO
               owner: "",
+              // TODO
               repo: "",
               oauthToken: cdk.SecretValue.secretsManager(githubTokenSecretId)
             }),
