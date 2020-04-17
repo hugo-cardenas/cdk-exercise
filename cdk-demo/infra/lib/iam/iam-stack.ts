@@ -25,17 +25,17 @@ export class IamStack extends cdk.Stack {
           password: consolePassword.valueAsString,
           passwordResetRequired: true,
         },
-        policies: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["sts:AssumeRole"],
-            resources: [adminRole.roleArn],
-          })
-        ]
+        // policies: [
+        //   new iam.PolicyStatement({
+        //     effect: iam.Effect.ALLOW,
+        //     actions: ["sts:AssumeRole"],
+        //     resources: [adminRole.roleArn],
+        //   })
+        // ]
       });
 
       // Output the AWS Console password on the CLI
-      new cdk.CfnOutput(this, userResourceId("ConsolePassword"), {
+      new cdk.CfnOutput(this, userResourceId("ConsolePasswordOutput"), {
         value: consolePassword.valueAsString,
       });
 
