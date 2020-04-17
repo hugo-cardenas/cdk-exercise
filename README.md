@@ -8,6 +8,7 @@ AWS CDK intro workshop from https://cdkworkshop.com.
 
 ### CDK Demo
 
-Exercise in defining a full infrastructure with CDK for one or multiple Node.js applications using AWS and Docker containers.
+Exercise in defining a full infrastructure with CDK for one or multiple Node.js applications using AWS.
 
-Includes the whole application running environment and CI pipelines.
+Will include application boilerplate running environment and CI pipelines.
+Might create 2 alternatives - using Docker containers and using Serverless.
