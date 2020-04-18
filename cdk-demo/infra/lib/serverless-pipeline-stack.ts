@@ -38,7 +38,7 @@ export class ServerlessPipelineStack extends cdk.Stack {
           stageName: "BuildAndTest",
           actions: [
             new codepipelineActions.CodeBuildAction({
-              actionName: "Build",
+              actionName: "BuildAndTest",
               input: sourceOutput,
               project: createBuildAndTestProject(this, props),
             }),
@@ -63,7 +63,7 @@ const createBuildAndTestProject = (
   scope: cdk.Construct,
   { appConfig }: PipelineStackProps
 ) =>
-  new codebuild.PipelineProject(scope, "Build", {
+  new codebuild.PipelineProject(scope, "BuildAndTest", {
     buildSpec: codebuild.BuildSpec.fromObject({
       version: "0.2",
       phases: {
@@ -71,7 +71,7 @@ const createBuildAndTestProject = (
           commands: `cd ${appConfig.path} && npm install -D`,
         },
         build: {
-          commands: ["npm test"],
+          commands: ["npm eslint", "npm test"],
         },
       },
     }),
@@ -84,7 +84,7 @@ const createDeployToStagingProject = (
   scope: cdk.Construct,
   { appConfig }: PipelineStackProps
 ) =>
-  new codebuild.PipelineProject(scope, "Build", {
+  new codebuild.PipelineProject(scope, "DeployToStaging", {
     buildSpec: codebuild.BuildSpec.fromObject({
       version: "0.2",
       phases: {
