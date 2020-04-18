@@ -8,7 +8,7 @@ import { ApplicationId, ApplicationConfig } from "../utils/config";
 
 export interface PipelineStackProps extends StackProps {
   appId: ApplicationId;
-  appConfig: ApplicationConfig
+  appConfig: ApplicationConfig;
   githubTokenSecret: secretsmanager.Secret;
 }
 
@@ -59,7 +59,10 @@ export class ServerlessPipelineStack extends cdk.Stack {
   }
 }
 
-const createBuildAndTestProject = (scope: cdk.Construct, { appConfig }: PipelineStackProps) =>
+const createBuildAndTestProject = (
+  scope: cdk.Construct,
+  { appConfig }: PipelineStackProps
+) =>
   new codebuild.PipelineProject(scope, "Build", {
     buildSpec: codebuild.BuildSpec.fromObject({
       version: "0.2",
@@ -68,9 +71,7 @@ const createBuildAndTestProject = (scope: cdk.Construct, { appConfig }: Pipeline
           commands: `cd ${appConfig.path} && npm install -D`,
         },
         build: {
-          commands: [
-            "npm test",
-          ]
+          commands: ["npm test"],
         },
       },
     }),
@@ -79,7 +80,10 @@ const createBuildAndTestProject = (scope: cdk.Construct, { appConfig }: Pipeline
     },
   });
 
-const createDeployToStagingProject = (scope: cdk.Construct, { appConfig }: PipelineStackProps) =>
+const createDeployToStagingProject = (
+  scope: cdk.Construct,
+  { appConfig }: PipelineStackProps
+) =>
   new codebuild.PipelineProject(scope, "Build", {
     buildSpec: codebuild.BuildSpec.fromObject({
       version: "0.2",

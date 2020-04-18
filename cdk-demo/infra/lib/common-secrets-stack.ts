@@ -9,10 +9,14 @@ interface CommonSecretsStackProps extends cdk.StackProps {
 export class CommonSecretsStack extends cdk.Stack {
   readonly githubTokenSecret: secretsmanager.Secret;
 
-  constructor(scope: cdk.Construct, id: string, props: CommonSecretsStackProps) {
+  constructor(
+    scope: cdk.Construct,
+    id: string,
+    props: CommonSecretsStackProps
+  ) {
     super(scope, id, props);
-    const { organization } = props
-    const resourceName = (name: string) => `${organization}-${name}`
+    const { organization } = props;
+    const resourceName = (name: string) => `${organization}-${name}`;
 
     this.githubTokenSecret = new secretsmanager.Secret(
       this,

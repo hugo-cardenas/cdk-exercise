@@ -11,13 +11,18 @@ export class IamStack extends cdk.Stack {
     const developerUserGroup = new iam.Group(this, "DeveloperUserGroup");
 
     awsUsers.map((user) => {
-      const userName = `DeveloperUser-${user.name}`
-      const userResourceId = (resourceId: string) => `${resourceId}-${userName}`
+      const userName = `DeveloperUser-${user.name}`;
+      const userResourceId = (resourceId: string) =>
+        `${resourceId}-${userName}`;
 
       // This generates the default value only on the 1st run if the Parameter hasn't been created yet
-      const consolePassword = new cdk.CfnParameter(this, userResourceId("ConsolePassword"), {
-        default: randomString(20)
-      })
+      const consolePassword = new cdk.CfnParameter(
+        this,
+        userResourceId("ConsolePassword"),
+        {
+          default: randomString(20),
+        }
+      );
       const cfnUser = new iam.CfnUser(this, userName, {
         userName,
         groups: [developerUserGroup.groupName],
