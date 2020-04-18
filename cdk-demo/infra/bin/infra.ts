@@ -1,16 +1,38 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
-import { ApplicationStack } from "../lib/application-stack";
-import { PipelineStack } from "../lib/pipeline-stack";
-import { resolveApplicationStackName, resolveCommonStackName, resolvePipelineName } from "../utils/config";
+import {
+  applicationConfigs,
+  commonStackName,
+  pipelineName,
+  Organization,
+  ApplicationId,
+} from "../utils/config";
 import { IamStack } from "../lib/iam/iam-stack";
 import { ServerlessPipelineStack } from "../lib/serverless-pipeline-stack";
+import { CommonSecretsStack } from "../lib/common-secrets-stack";
+
+const organization: Organization = "GalacticEmpire";
+const applicationId: ApplicationId = "DeathStarServerless"
 
 const app = new cdk.App();
 
-new IamStack(app, resolveCommonStackName("IAM"));
-new PipelineStack(app, resolveCommonStackName("Pipeline"));
-new ApplicationStack(app, resolveApplicationStackName("DeathStar", "staging"));
+const commonSecretsStack = new CommonSecretsStack(
+  app,
+  commonStackName(organization, "CommonSecrets"),
+  {
+    organization,
+  }
+);
 
-new ServerlessPipelineStack(app, resolvePipelineName("DeathStarServerless"), { appId: "DeathStarServerless" })
+new IamStack(app, commonStackName(organization, "IAM"));
+
+new ServerlessPipelineStack(
+  app,
+  pipelineName(organization, applicationId),
+  {
+    appId: applicationId,
+    appConfig: applicationConfigs[applicationId],
+    githubTokenSecret: commonSecretsStack.githubTokenSecret
+  }
+);

@@ -7,12 +7,9 @@
     "test": "echo \"Simulating test run: Success!\" && exit 0"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.50",
-    "eslint": "^6.8.0",
-    "prettier": "^2.0.4",
-    "serverless-plugin-typescript": "^1.1.9",
-    "typescript": "^3.8.3"
+    "serverless-plugin-typescript": "^1.1.9"
   }
 }
