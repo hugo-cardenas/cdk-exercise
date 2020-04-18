@@ -67,11 +67,14 @@ const createBuildAndTestProject = (
     buildSpec: codebuild.BuildSpec.fromObject({
       version: "0.2",
       phases: {
-        install: {
-          commands: `cd ${appConfig.path} && npm install -D`,
-        },
         build: {
-          commands: ["npm eslint", "npm test"],
+          commands: [
+            "npm install -D",
+            "npm run eslint",
+            `cd ${appConfig.path}`,
+            "npm install -D",
+            "npm test",
+          ],
         },
       },
     }),
