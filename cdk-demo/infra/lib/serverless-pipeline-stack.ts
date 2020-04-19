@@ -69,6 +69,8 @@ const createBuildAndTestProject = (
       phases: {
         build: {
           commands: [
+            // This should disappear for the real project
+            "cd cdk-demo",
             "npm install -D",
             "npm run eslint:check",
             "npm run prettier:check",

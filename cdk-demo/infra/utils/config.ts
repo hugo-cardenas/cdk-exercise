@@ -11,10 +11,10 @@ export const applicationConfigs: {
   [key in ApplicationId]: ApplicationConfig;
 } = {
   DeathStar: {
-    path: "cdk-demo/death-star",
+    path: "death-star",
   },
   DeathStarServerless: {
-    path: "cdk-demo/death-star-serverless",
+    path: "death-star-serverless",
   },
 };
 
