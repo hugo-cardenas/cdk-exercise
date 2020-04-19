@@ -1,0 +1,3 @@
+infra/**/*.d.ts
+infra/**/*.js
+infra/cdk.out

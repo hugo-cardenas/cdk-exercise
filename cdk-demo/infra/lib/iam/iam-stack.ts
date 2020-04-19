@@ -46,7 +46,7 @@ export class IamStack extends cdk.Stack {
 
       // Create an Access Key+Secret for programmatic access and output the Secret on the CLI
       const key = new iam.CfnAccessKey(this, userResourceId("AccessKey"), {
-        userName: cfnUser.userName!,
+        userName: userName,
       });
       key.addDependsOn(cfnUser);
       new cdk.CfnOutput(this, userResourceId("AccessKeyOutput"), {

@@ -15,11 +15,11 @@ export interface PipelineStackProps extends StackProps {
 export class ServerlessPipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
-    const { appId, appConfig, githubTokenSecret } = props;
+    const { githubTokenSecret } = props;
 
     const sourceOutput = new codepipeline.Artifact();
 
-    new codepipeline.Pipeline(this, `Pipeline`, {
+    new codepipeline.Pipeline(this, "Pipeline", {
       pipelineName: id,
       stages: [
         {
@@ -70,7 +70,8 @@ const createBuildAndTestProject = (
         build: {
           commands: [
             "npm install -D",
-            "npm run eslint",
+            "npm run eslint:check",
+            "npm run prettier:check",
             `cd ${appConfig.path}`,
             "npm install -D",
             "npm test",
@@ -83,20 +84,20 @@ const createBuildAndTestProject = (
     },
   });
 
-const createDeployToStagingProject = (
-  scope: cdk.Construct,
-  { appConfig }: PipelineStackProps
-) =>
-  new codebuild.PipelineProject(scope, "DeployToStaging", {
-    buildSpec: codebuild.BuildSpec.fromObject({
-      version: "0.2",
-      phases: {
-        build: {
-          commands: `cd ${appConfig.path} && serverless deploy --stage staging`,
-        },
-      },
-    }),
-    environment: {
-      buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
-    },
-  });
+// const createDeployToStagingProject = (
+//   scope: cdk.Construct,
+//   { appConfig }: PipelineStackProps
+// ) =>
+//   new codebuild.PipelineProject(scope, "DeployToStaging", {
+//     buildSpec: codebuild.BuildSpec.fromObject({
+//       version: "0.2",
+//       phases: {
+//         build: {
+//           commands: `cd ${appConfig.path} && serverless deploy --stage staging`,
+//         },
+//       },
+//     }),
+//     environment: {
+//       buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+//     },
+//   });
