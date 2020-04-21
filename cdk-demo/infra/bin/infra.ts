@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
+import { commonStackName, pipelineName } from "../utils/config";
 import {
   applicationConfigs,
-  commonStackName,
-  pipelineName,
   Organization,
   ApplicationId,
-} from "../utils/config";
+} from "../../common/applications";
 import { IamStack } from "../lib/iam/iam-stack";
 import { ServerlessPipelineStack } from "../lib/serverless-pipeline-stack";
 import { CommonSecretsStack } from "../lib/common-secrets-stack";

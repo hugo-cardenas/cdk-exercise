@@ -4,7 +4,7 @@ import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as codebuild from "@aws-cdk/aws-codebuild";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import { StackProps } from "@aws-cdk/core";
-import { ApplicationId, ApplicationConfig } from "../utils/config";
+import { ApplicationId, ApplicationConfig } from "../../common/applications";
 
 export interface PipelineStackProps extends StackProps {
   appId: ApplicationId;

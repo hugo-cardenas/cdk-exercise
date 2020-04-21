@@ -1,6 +1,6 @@
 import * as cdk from "@aws-cdk/core";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
-import { Organization } from "../utils/config";
+import { Organization } from "../../common/applications";
 
 interface CommonSecretsStackProps extends cdk.StackProps {
   organization: Organization;
