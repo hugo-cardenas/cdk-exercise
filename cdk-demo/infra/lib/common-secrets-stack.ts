@@ -25,5 +25,9 @@ export class CommonSecretsStack extends cdk.Stack {
         secretName: resourceName(`GithubTokenSecret`),
       }
     );
+
+    new cdk.CfnOutput(this, "GithubTokenSecret", {
+      value: this.githubTokenSecret.toString(),
+    });
   }
 }

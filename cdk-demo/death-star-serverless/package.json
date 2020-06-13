@@ -10,6 +10,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.50",
-    "serverless-plugin-typescript": "^1.1.9"
+    "prettier": "^2.0.5",
+    "serverless-plugin-typescript": "^1.1.9",
+    "typescript": "^3.9.5"
   }
 }

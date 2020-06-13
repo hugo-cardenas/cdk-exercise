@@ -1,14 +1,27 @@
-# Welcome to your CDK TypeScript project!
+# infra
 
-This is a blank project for TypeScript development with CDK.
+List all stacks
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+    npx cdk list
 
-## Useful commands
+### Steps
 
-- `npm run build` compile typescript to js
-- `npm run watch` watch for changes and compile
-- `npm run test` perform the jest unit tests
-- `cdk deploy` deploy this stack to your default AWS account/region
-- `cdk diff` compare deployed stack with current state
-- `cdk synth` emits the synthesized CloudFormation template
+1.  Deploy `secrets` stack
+
+    ```
+    npx cdk deploy GalacticEmpire-CommonSecrets
+    ```
+
+2.  [Create a Github personal access token](https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-create-personal-token-CLI.html)
+
+3.  Store the token to Secrets Manager existing value
+
+    ```
+    aws secretsmanager put-secret-value --secret-id <id> --secret-string <value>
+    ```
+
+4.  Deploy the pipeline
+
+    ```
+    npx cdk deploy GalacticEmpire-Pipeline-DeathStarServerless
+    ```
