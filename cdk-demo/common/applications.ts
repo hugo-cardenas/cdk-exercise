@@ -2,22 +2,27 @@ export const organizations = ["MyOrganization" as const];
 export type Organization = typeof organizations[number];
 
 const applications = [
-  "MyContainerApplication" as const,
+  // "MyContainerApplication" as const,
   "MyServerlessApplication" as const,
 ];
 export type ApplicationId = typeof applications[number];
 
 export interface ApplicationConfig {
-  path: string;
+  paths: {
+    client: string;
+    clientBuild: string;
+    server: string;
+  };
 }
 export const applicationConfigs: {
   [key in ApplicationId]: ApplicationConfig;
 } = {
-  MyContainerApplication: {
-    path: "my-container-application",
-  },
   MyServerlessApplication: {
-    path: "my-serverless-application",
+    paths: {
+      client: "my-serverless-application/client",
+      clientBuild: "my-serverless-application/client/build",
+      server: "my-serverless-application/server",
+    },
   },
 };
 

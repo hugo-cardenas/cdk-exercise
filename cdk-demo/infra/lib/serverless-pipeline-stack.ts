@@ -67,7 +67,7 @@ export class ServerlessPipelineStack extends cdk.Stack {
             new codepipelineActions.CodeBuildAction({
               actionName: "DeployToStaging",
               input: sourceOutput,
-              project: createDeployProject(
+              project: createDeployServerProject(
                 this,
                 props,
                 codeBuildRole,
@@ -93,12 +93,16 @@ const createBuildAndTestProject = (
           commands: [
             // This should disappear for the real project
             "cd cdk-demo",
-            "npm install -D",
+            "npm ci",
             "npm run eslint:check",
             "npm run prettier:check",
-            `cd ${appConfig.path}`,
-            "npm install -D",
+            `cd "$CODEBUILD_SRC_DIR/${appConfig.paths.server}"`,
+            "npm ci",
             "npm test",
+            // `cd "$CODEBUILD_SRC_DIR/${appConfig.paths.client}"`,
+            // "npm ci",
+            // "npm test",
+            // "npm run build",
           ],
         },
       },
@@ -108,7 +112,7 @@ const createBuildAndTestProject = (
     },
   });
 
-const createDeployProject = (
+const createDeployServerProject = (
   scope: cdk.Construct,
   { appConfig }: PipelineStackProps,
   codeBuildRole: iam.IRole,
@@ -122,7 +126,7 @@ const createDeployProject = (
           commands: [
             // This should disappear for the real project
             "cd cdk-demo",
-            `cd ${appConfig.path}`,
+            `cd ${appConfig.paths.server}`,
             "npm install -D",
             `npx serverless deploy --stage ${stage}`,
           ],
