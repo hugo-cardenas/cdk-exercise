@@ -36,6 +36,19 @@ export class ServerlessPipelineStack extends cdk.Stack {
       codeBuildRoleArn
     );
 
+    const deployActions = (stage: Stage) => [
+      // new codepipelineActions.S3DeployAction({
+      //   actionName: `DeployClientTo${firstToUpperCase(stage)}`,
+      //   input: clientBuildOutput,
+      //   bucket: applicationClientBuckets[stage],
+      // }),
+      new codepipelineActions.CodeBuildAction({
+        actionName: `DeployServerTo${firstToUpperCase(stage)}`,
+        input: sourceOutput,
+        project: createDeployServerProject(this, props, codeBuildRole, stage),
+      }),
+    ];
+
     new codepipeline.Pipeline(this, "Pipeline", {
       pipelineName: id,
       stages: [
@@ -63,18 +76,19 @@ export class ServerlessPipelineStack extends cdk.Stack {
         },
         {
           stageName: "DeployToStaging",
+          actions: deployActions("staging"),
+        },
+        {
+          stageName: "ApproveDeployToProduction",
           actions: [
-            new codepipelineActions.CodeBuildAction({
-              actionName: "DeployToStaging",
-              input: sourceOutput,
-              project: createDeployServerProject(
-                this,
-                props,
-                codeBuildRole,
-                "staging"
-              ),
+            new codepipelineActions.ManualApprovalAction({
+              actionName: "ApproveDeployToProduction",
             }),
           ],
+        },
+        {
+          stageName: "DeployToProduction",
+          actions: deployActions("production"),
         },
       ],
     });
