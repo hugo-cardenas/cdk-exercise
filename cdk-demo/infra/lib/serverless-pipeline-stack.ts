@@ -106,7 +106,7 @@ const createDeployProject = (
             "cd cdk-demo",
             `cd ${appConfig.path}`,
             "npm install -D",
-            `serverless deploy --stage ${stage}`,
+            `npx serverless deploy --stage ${stage}`,
           ],
         },
       },
