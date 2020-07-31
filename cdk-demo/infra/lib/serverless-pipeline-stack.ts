@@ -101,7 +101,13 @@ const createDeployProject = (
       version: "0.2",
       phases: {
         build: {
-          commands: `cd ${appConfig.path} && serverless deploy --stage ${stage}`,
+          commands: [
+            // This should disappear for the real project
+            "cd cdk-demo",
+            `cd ${appConfig.path}`,
+            "npm install -D",
+            `serverless deploy --stage ${stage}`,
+          ],
         },
       },
     }),
