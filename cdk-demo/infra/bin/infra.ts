@@ -9,6 +9,7 @@ import {
 } from "../../common/applications";
 import { IamStack } from "../lib/iam/iam-stack";
 import { ServerlessPipelineStack } from "../lib/serverless-pipeline-stack";
+import { CommonRolesStack } from "../lib/common-roles-stack";
 import { CommonSecretsStack } from "../lib/common-secrets-stack";
 
 const organization: Organization = "MyOrganization";
@@ -24,10 +25,19 @@ const commonSecretsStack = new CommonSecretsStack(
   }
 );
 
+const commonRolesStack = new CommonRolesStack(
+  app,
+  commonStackName(organization, "CommonRoles"),
+  {
+    organization,
+  }
+);
+
 new IamStack(app, commonStackName(organization, "IAM"));
 
 new ServerlessPipelineStack(app, pipelineName(organization, applicationId), {
   appId: applicationId,
   appConfig: applicationConfigs[applicationId],
   githubTokenSecret: commonSecretsStack.githubTokenSecret,
+  codeBuildRoleArn: commonRolesStack.codeBuildRole.roleArn,
 });

@@ -2,6 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as codepipeline from "@aws-cdk/aws-codepipeline";
 import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as codebuild from "@aws-cdk/aws-codebuild";
+import * as iam from "@aws-cdk/aws-iam";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import { StackProps } from "@aws-cdk/core";
 import {
@@ -15,14 +16,25 @@ export interface PipelineStackProps extends StackProps {
   appId: ApplicationId;
   appConfig: ApplicationConfig;
   githubTokenSecret: secretsmanager.Secret;
+  // Using ARN instead of passing the Role object to avoid a cyclic reference error
+  // Similar to https://github.com/aws/aws-cdk/issues/3732
+  codeBuildRoleArn: string;
 }
+
+const buildImage = codebuild.LinuxBuildImage.STANDARD_2_0;
 
 export class ServerlessPipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
-    const { githubTokenSecret } = props;
+    const { codeBuildRoleArn, githubTokenSecret } = props;
 
     const sourceOutput = new codepipeline.Artifact();
+
+    const codeBuildRole = iam.Role.fromRoleArn(
+      this,
+      "CodeBuildRole",
+      codeBuildRoleArn
+    );
 
     new codepipeline.Pipeline(this, "Pipeline", {
       pipelineName: id,
@@ -55,7 +67,12 @@ export class ServerlessPipelineStack extends cdk.Stack {
             new codepipelineActions.CodeBuildAction({
               actionName: "DeployToStaging",
               input: sourceOutput,
-              project: createDeployProject(this, props, "staging"),
+              project: createDeployProject(
+                this,
+                props,
+                codeBuildRole,
+                "staging"
+              ),
             }),
           ],
         },
@@ -87,13 +104,14 @@ const createBuildAndTestProject = (
       },
     }),
     environment: {
-      buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+      buildImage,
     },
   });
 
 const createDeployProject = (
   scope: cdk.Construct,
   { appConfig }: PipelineStackProps,
+  codeBuildRole: iam.IRole,
   stage: Stage
 ) =>
   new codebuild.PipelineProject(scope, `DeployTo${firstToUpperCase(stage)}`, {
@@ -111,7 +129,8 @@ const createDeployProject = (
         },
       },
     }),
+    role: codeBuildRole,
     environment: {
-      buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+      buildImage,
     },
   });

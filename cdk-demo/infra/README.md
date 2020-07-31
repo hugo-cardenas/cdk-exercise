@@ -23,5 +23,5 @@ List all stacks
 4.  Deploy the pipeline
 
     ```
-    npx cdk deploy MyOrganization-Pipeline-MyServerlssApplication
+    npx cdk deploy MyOrganization-Pipeline-MyServerlessApplication
     ```
