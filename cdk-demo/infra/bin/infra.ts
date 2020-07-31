@@ -11,8 +11,8 @@ import { IamStack } from "../lib/iam/iam-stack";
 import { ServerlessPipelineStack } from "../lib/serverless-pipeline-stack";
 import { CommonSecretsStack } from "../lib/common-secrets-stack";
 
-const organization: Organization = "GalacticEmpire";
-const applicationId: ApplicationId = "DeathStarServerless";
+const organization: Organization = "MyOrganization";
+const applicationId: ApplicationId = "MyServerlessApplication";
 
 const app = new cdk.App();
 

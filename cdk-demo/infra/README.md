@@ -9,7 +9,7 @@ List all stacks
 1.  Deploy `secrets` stack
 
     ```
-    npx cdk deploy GalacticEmpire-CommonSecrets
+    npx cdk deploy MyOrganization-CommonSecrets
     ```
 
 2.  [Create a Github personal access token](https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-create-personal-token-CLI.html)
@@ -23,5 +23,5 @@ List all stacks
 4.  Deploy the pipeline
 
     ```
-    npx cdk deploy GalacticEmpire-Pipeline-DeathStarServerless
+    npx cdk deploy MyOrganization-Pipeline-MyServerlssApplication
     ```

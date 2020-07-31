@@ -1,7 +1,10 @@
-export const organizations = ["GalacticEmpire" as const];
+export const organizations = ["MyOrganization" as const];
 export type Organization = typeof organizations[number];
 
-const applications = ["DeathStar" as const, "DeathStarServerless" as const];
+const applications = [
+  "MyContainerApplication" as const,
+  "MyServerlessApplication" as const,
+];
 export type ApplicationId = typeof applications[number];
 
 export interface ApplicationConfig {
@@ -10,11 +13,11 @@ export interface ApplicationConfig {
 export const applicationConfigs: {
   [key in ApplicationId]: ApplicationConfig;
 } = {
-  DeathStar: {
-    path: "death-star",
+  MyContainerApplication: {
+    path: "my-container-application",
   },
-  DeathStarServerless: {
-    path: "death-star-serverless",
+  MyServerlessApplication: {
+    path: "my-serverless-application",
   },
 };
 

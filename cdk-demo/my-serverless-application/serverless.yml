@@ -1,4 +1,4 @@
-service: death-star-serverless
+service: my-serverless-application
 
 provider:
   name: aws
