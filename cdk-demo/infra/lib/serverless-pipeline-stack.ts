@@ -96,10 +96,12 @@ const createBuildAndTestProject = (
             "npm ci",
             "npm run eslint:check",
             "npm run prettier:check",
-            `cd "$CODEBUILD_SRC_DIR/${appConfig.paths.server}"`,
+            // cdk-demo should disappear for the real project
+            `cd "$CODEBUILD_SRC_DIR/cdk-demo/${appConfig.paths.server}"`,
             "npm ci",
             "npm test",
-            // `cd "$CODEBUILD_SRC_DIR/${appConfig.paths.client}"`,
+            // cdk-demo should disappear for the real project
+            // `cd "$CODEBUILD_SRC_DIR/cdk-demo/${appConfig.paths.client}"`,
             // "npm ci",
             // "npm test",
             // "npm run build",
