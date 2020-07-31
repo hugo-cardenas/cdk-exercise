@@ -4,7 +4,12 @@ import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as codebuild from "@aws-cdk/aws-codebuild";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import { StackProps } from "@aws-cdk/core";
-import { ApplicationId, ApplicationConfig } from "../../common/applications";
+import {
+  ApplicationId,
+  ApplicationConfig,
+  Stage,
+} from "../../common/applications";
+import { firstToUpperCase } from "../../common/utils";
 
 export interface PipelineStackProps extends StackProps {
   appId: ApplicationId;
@@ -44,16 +49,16 @@ export class ServerlessPipelineStack extends cdk.Stack {
             }),
           ],
         },
-        // {
-        //   stageName: "DeployToStaging",
-        //   actions: [
-        //     new codepipelineActions.CodeBuildAction({
-        //       actionName: "Build",
-        //       input: sourceOutput,
-        //       project: createDeployToStagingProject(this, props),
-        //     }),
-        //   ],
-        // },
+        {
+          stageName: "DeployToStaging",
+          actions: [
+            new codepipelineActions.CodeBuildAction({
+              actionName: "DeployToStaging",
+              input: sourceOutput,
+              project: createDeployProject(this, props, "staging"),
+            }),
+          ],
+        },
       ],
     });
   }
@@ -86,20 +91,21 @@ const createBuildAndTestProject = (
     },
   });
 
-// const createDeployToStagingProject = (
-//   scope: cdk.Construct,
-//   { appConfig }: PipelineStackProps
-// ) =>
-//   new codebuild.PipelineProject(scope, "DeployToStaging", {
-//     buildSpec: codebuild.BuildSpec.fromObject({
-//       version: "0.2",
-//       phases: {
-//         build: {
-//           commands: `cd ${appConfig.path} && serverless deploy --stage staging`,
-//         },
-//       },
-//     }),
-//     environment: {
-//       buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
-//     },
-//   });
+const createDeployProject = (
+  scope: cdk.Construct,
+  { appConfig }: PipelineStackProps,
+  stage: Stage
+) =>
+  new codebuild.PipelineProject(scope, `DeployTo${firstToUpperCase(stage)}`, {
+    buildSpec: codebuild.BuildSpec.fromObject({
+      version: "0.2",
+      phases: {
+        build: {
+          commands: `cd ${appConfig.path} && serverless deploy --stage ${stage}`,
+        },
+      },
+    }),
+    environment: {
+      buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+    },
+  });

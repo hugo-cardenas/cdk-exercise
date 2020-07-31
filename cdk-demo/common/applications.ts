@@ -17,3 +17,6 @@ export const applicationConfigs: {
     path: "death-star-serverless",
   },
 };
+
+export const stages = ["staging" as const, "production" as const];
+export type Stage = typeof stages[number];
