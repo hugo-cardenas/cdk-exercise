@@ -9,7 +9,7 @@ List all stacks
 1.  Deploy `secrets` stack
 
     ```
-    npx cdk deploy MyOrganization-CommonSecrets
+    npx cdk deploy MyOrganizationFoo-CommonSecrets
     ```
 
 2.  [Create a Github personal access token](https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-create-personal-token-CLI.html)
@@ -20,8 +20,15 @@ List all stacks
     aws secretsmanager put-secret-value --secret-id <id> --secret-string <value>
     ```
 
-4.  Deploy the pipeline
+4.  Deploy the application stacks
 
     ```
-    npx cdk deploy MyOrganization-Pipeline-MyServerlessApplication
+    npx cdk deploy MyOrganizationFoo-MyServerlessApplication-staging
+    npx cdk deploy MyOrganizationFoo-MyServerlessApplication-production
+    ```
+
+5.  Deploy the pipeline
+
+    ```
+    npx cdk deploy MyOrganizationFoo-Pipeline-MyServerlessApplication
     ```

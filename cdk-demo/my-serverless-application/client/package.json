@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "npm run ts-verify && parcel src/index.html --out-dir build",
+    "build": "npm run ts-verify && rm -r build && NODE_ENV=production parcel build src/index.html --out-dir build",
+    "test": "echo 'No tests' && exit 0",
+    "ts-verify": "tsc --noEmit"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^16.9.43",
+    "@types/react-dom": "^16.9.8",
+    "parcel-bundler": "^1.12.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "typescript": "^3.9.7"
+  }
+}

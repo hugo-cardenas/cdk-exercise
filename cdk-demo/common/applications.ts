@@ -1,4 +1,4 @@
-export const organizations = ["MyOrganization" as const];
+export const organizations = ["MyOrganizationFoo" as const];
 export type Organization = typeof organizations[number];
 
 const applications = [
@@ -19,9 +19,9 @@ export const applicationConfigs: {
 } = {
   MyServerlessApplication: {
     paths: {
-      client: "my-serverless-application/client",
-      clientBuild: "my-serverless-application/client/build",
-      server: "my-serverless-application/server",
+      client: "cdk-demo/my-serverless-application/client",
+      clientBuild: "cdk-demo/my-serverless-application/client/build",
+      server: "cdk-demo/my-serverless-application/server",
     },
   },
 };
