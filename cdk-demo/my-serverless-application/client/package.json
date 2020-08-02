@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "npm run ts-verify && parcel src/index.html --out-dir build",
-    "build": "npm run ts-verify && rm -r build && NODE_ENV=production parcel build src/index.html --out-dir build",
+    "build": "npm run ts-verify && rm -r build; NODE_ENV=production parcel build src/index.html --out-dir build",
     "test": "echo 'No tests' && exit 0",
     "ts-verify": "tsc --noEmit"
   },
