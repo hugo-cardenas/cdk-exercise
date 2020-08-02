@@ -1,11 +1,3 @@
 {
-  "app": "npx ts-node bin/infra.ts",
-  "context": {
-    "production": {
-      "region": "eu-central-1"
-    },
-    "staging": {
-      "region": "eu-central-1"
-    }
-  }
+  "app": "npx ts-node bin/infra.ts"
 }
