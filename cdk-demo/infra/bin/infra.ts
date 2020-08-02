@@ -63,4 +63,8 @@ new ServerlessPipelineStack(app, pipelineName(organization, applicationId), {
   appConfig: applicationConfigs[applicationId],
   githubTokenSecret: commonSecretsStack.githubTokenSecret,
   codeBuildRoleArn: commonRolesStack.codeBuildRole.roleArn,
+  applicationClientBuckets: {
+    staging: applicationStacks.staging.applicationClientBucket,
+    production: applicationStacks.production.applicationClientBucket,
+  },
 });

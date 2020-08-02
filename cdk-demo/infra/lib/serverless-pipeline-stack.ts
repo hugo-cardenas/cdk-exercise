@@ -4,6 +4,7 @@ import * as codepipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as codebuild from "@aws-cdk/aws-codebuild";
 import * as iam from "@aws-cdk/aws-iam";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
+import * as s3 from "@aws-cdk/aws-s3";
 import { StackProps } from "@aws-cdk/core";
 import {
   ApplicationId,
@@ -19,6 +20,12 @@ export interface PipelineStackProps extends StackProps {
   // Using ARN instead of passing the Role object to avoid a cyclic reference error
   // Similar to https://github.com/aws/aws-cdk/issues/3732
   codeBuildRoleArn: string;
+  applicationClientBuckets: ApplicationClientBuckets;
+}
+
+export interface ApplicationClientBuckets {
+  staging: s3.Bucket;
+  production: s3.Bucket;
 }
 
 const buildImage = codebuild.LinuxBuildImage.STANDARD_2_0;
@@ -26,7 +33,11 @@ const buildImage = codebuild.LinuxBuildImage.STANDARD_2_0;
 export class ServerlessPipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
-    const { codeBuildRoleArn, githubTokenSecret } = props;
+    const {
+      applicationClientBuckets,
+      codeBuildRoleArn,
+      githubTokenSecret,
+    } = props;
 
     const sourceOutput = new codepipeline.Artifact();
     const clientBuildOutput = new codepipeline.Artifact();
@@ -38,11 +49,11 @@ export class ServerlessPipelineStack extends cdk.Stack {
     );
 
     const deployActions = (stage: Stage) => [
-      // new codepipelineActions.S3DeployAction({
-      //   actionName: `DeployClientTo${firstToUpperCase(stage)}`,
-      //   input: clientBuildOutput,
-      //   bucket: applicationClientBuckets[stage],
-      // }),
+      new codepipelineActions.S3DeployAction({
+        actionName: `DeployClientTo${firstToUpperCase(stage)}`,
+        input: clientBuildOutput,
+        bucket: applicationClientBuckets[stage],
+      }),
       new codepipelineActions.CodeBuildAction({
         actionName: `DeployServerTo${firstToUpperCase(stage)}`,
         input: sourceOutput,
@@ -71,6 +82,7 @@ export class ServerlessPipelineStack extends cdk.Stack {
             new codepipelineActions.CodeBuildAction({
               actionName: "TestAndBuild",
               input: sourceOutput,
+              outputs: [clientBuildOutput],
               project: createTestAndBuildProject(this, props),
             }),
           ],
