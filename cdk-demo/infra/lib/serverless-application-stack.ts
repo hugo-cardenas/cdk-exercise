@@ -1,9 +1,9 @@
 import * as cdk from "@aws-cdk/core";
 import { StackProps, Environment } from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
-// import * as certificateManager from "@aws-cdk/aws-certificatemanager";
+import * as certificateManager from "@aws-cdk/aws-certificatemanager";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
-// import * as route53 from "@aws-cdk/aws-route53";
+import * as route53 from "@aws-cdk/aws-route53";
 import {
   ApplicationId,
   Organization,
@@ -28,11 +28,8 @@ export class ServerlessApplicationStack extends cdk.Stack {
     const resourceName = (name: string) =>
       `${organization}-${appId}-${stage}-${name}`;
 
-    // const domain = applicationConfig.urls[stage];
-
-    // const hostedZone = new route53.HostedZone(this, "Zone", {
-    //   zoneName: domain,
-    // });
+    const { rootDomain } = applicationConfig.urls;
+    const applicationDomain = applicationConfig.urls[stage];
 
     this.applicationClientBucket = new s3.Bucket(this, resourceName("Client"), {
       bucketName: resourceName("Client").toLowerCase(),
@@ -40,26 +37,45 @@ export class ServerlessApplicationStack extends cdk.Stack {
       publicReadAccess: true,
     });
 
-    // new certificateManager.DnsValidatedCertificate(this, "SiteCertificate", {
-    //   domainName: domain,
-    //   hostedZone,
-    // });
+    const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
+      domainName: rootDomain,
+    });
 
-    // new cloudfront.CloudFrontWebDistribution(this, "SiteDistribution", {
-    //   // aliasConfiguration: {
-    //   //   // acmCertRef: certificateArn,
-    //   //   names: [domain],
-    //   //   sslMethod: cloudfront.SSLMethod.SNI,
-    //   //   securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
-    //   // },
-    //   originConfigs: [
-    //     {
-    //       s3OriginSource: {
-    //         s3BucketSource: this.applicationClientBucket,
-    //       },
-    //       behaviors: [{ isDefaultBehavior: true }],
-    //     },
-    //   ],
-    // });
+    const certificate = new certificateManager.DnsValidatedCertificate(
+      this,
+      resourceName("SiteCertificate"),
+      {
+        domainName: applicationDomain,
+        hostedZone,
+        region: "us-east-1",
+      }
+    );
+
+    const cloudfrontDistribution = new cloudfront.CloudFrontWebDistribution(
+      this,
+      resourceName("WebDistribution"),
+      {
+        aliasConfiguration: {
+          acmCertRef: certificate.certificateArn,
+          names: [applicationDomain],
+          sslMethod: cloudfront.SSLMethod.SNI,
+          securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2018,
+        },
+        originConfigs: [
+          {
+            s3OriginSource: {
+              s3BucketSource: this.applicationClientBucket,
+            },
+            behaviors: [{ isDefaultBehavior: true }],
+          },
+        ],
+      }
+    );
+
+    new route53.CnameRecord(this, resourceName("Record"), {
+      zone: hostedZone,
+      recordName: applicationDomain,
+      domainName: cloudfrontDistribution.domainName,
+    });
   }
 }

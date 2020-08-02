@@ -13,6 +13,11 @@ export interface ApplicationConfig {
     clientBuild: string;
     server: string;
   };
+  urls: {
+    rootDomain: string;
+    staging: string;
+    production: string;
+  };
 }
 export const applicationConfigs: {
   [key in ApplicationId]: ApplicationConfig;
@@ -22,6 +27,11 @@ export const applicationConfigs: {
       client: "cdk-demo/my-serverless-application/client",
       clientBuild: "cdk-demo/my-serverless-application/client/build",
       server: "cdk-demo/my-serverless-application/server",
+    },
+    urls: {
+      rootDomain: "anagarcialucero.com",
+      staging: "myserverlessapp-staging.myorganizationfoo.anagarcialucero.com",
+      production: "myserverlessapp.myorganizationfoo.anagarcialucero.com",
     },
   },
 };

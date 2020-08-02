@@ -1,4 +1,8 @@
 {
   "@aws-cdk/core:enableStackNameDuplicates": "true",
-  "aws-cdk:enableDiffNoFail": "true"
+  "aws-cdk:enableDiffNoFail": "true",
+  "hosted-zone:account=260998989604:domainName=anagarcialucero.com:region=eu-central-1": {
+    "Id": "/hostedzone/Z0992023BA9LBNH7WBPE",
+    "Name": "anagarcialucero.com."
+  }
 }

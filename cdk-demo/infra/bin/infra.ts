@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
+import { Environment } from "@aws-cdk/core";
 import {
   commonStackName,
   pipelineName,
@@ -12,11 +13,19 @@ import {
   ApplicationId,
   Stage,
 } from "../../common/applications";
+import { Region } from "../../common/aws";
 import { IamStack } from "../lib/iam/iam-stack";
 import { ServerlessPipelineStack } from "../lib/serverless-pipeline-stack";
 import { CommonRolesStack } from "../lib/common-roles-stack";
 import { CommonSecretsStack } from "../lib/common-secrets-stack";
 import { ServerlessApplicationStack } from "../lib/serverless-application-stack";
+
+const region: Region = "eu-central-1";
+
+const env: Environment = {
+  account: "260998989604",
+  region,
+};
 
 const organization: Organization = "MyOrganizationFoo";
 const applicationId: ApplicationId = "MyServerlessApplication";
@@ -27,6 +36,7 @@ const commonSecretsStack = new CommonSecretsStack(
   app,
   commonStackName(organization, "CommonSecrets"),
   {
+    env,
     organization,
   }
 );
@@ -35,6 +45,7 @@ const commonRolesStack = new CommonRolesStack(
   app,
   commonStackName(organization, "CommonRoles"),
   {
+    env,
     organization,
   }
 );
@@ -48,6 +59,7 @@ const createApplicationStack = (stage: Stage) =>
     {
       appId: applicationId,
       applicationConfig: applicationConfigs[applicationId],
+      env,
       organization,
       stage,
     }
@@ -61,6 +73,7 @@ const applicationStacks = {
 new ServerlessPipelineStack(app, pipelineName(organization, applicationId), {
   appId: applicationId,
   appConfig: applicationConfigs[applicationId],
+  env,
   githubTokenSecret: commonSecretsStack.githubTokenSecret,
   codeBuildRoleArn: commonRolesStack.codeBuildRole.roleArn,
   applicationClientBuckets: {
