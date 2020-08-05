@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.45.0",
+    "@types/aws-lambda": "^8.10.59",
     "source-map-support": "^0.5.19",
     "typescript": "^3.9.5"
   }

@@ -1,6 +1,7 @@
 import * as cdk from "@aws-cdk/core";
-import { StackProps, Environment } from "@aws-cdk/core";
+import { StackProps } from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
+import * as apigateway from "@aws-cdk/aws-apigateway";
 import * as certificateManager from "@aws-cdk/aws-certificatemanager";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as route53 from "@aws-cdk/aws-route53";
@@ -10,6 +11,7 @@ import {
   ApplicationConfig,
   Stage,
 } from "../../common/applications";
+import * as lambda from "@aws-cdk/aws-lambda";
 
 export interface PipelineStackProps extends StackProps {
   organization: Organization;
@@ -68,6 +70,17 @@ export class ServerlessApplicationStack extends cdk.Stack {
             },
             behaviors: [{ isDefaultBehavior: true }],
           },
+          // {
+          //   customOriginSource: {
+          //     domainName: "97gyl24xu2.execute-api.eu-central-1.amazonaws.com",
+          //   },
+          //   originPath: "/staging",
+          //   behaviors: [
+          //     {
+          //       pathPattern: "/api/*",
+          //     },
+          //   ],
+          // },
         ],
       }
     );
@@ -77,5 +90,21 @@ export class ServerlessApplicationStack extends cdk.Stack {
       recordName: applicationDomain,
       domainName: cloudfrontDistribution.domainName,
     });
+
+    const helloLambda = new lambda.Function(this, "hello", {
+      code: new lambda.AssetCode("lib/lambda"),
+      handler: "users.hello",
+      runtime: lambda.Runtime.NODEJS_10_X,
+    });
+
+    const api = new apigateway.RestApi(this, "Api", {
+      deployOptions: {
+        stageName: stage,
+      },
+      restApiName: `${organization}-${appId}-${stage}`,
+    });
+
+    const items = api.root.addResource("users");
+    items.addMethod("GET", new apigateway.LambdaIntegration(helloLambda));
   }
 }
