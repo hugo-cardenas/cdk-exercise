@@ -91,11 +91,15 @@ export class ServerlessApplicationStack extends cdk.Stack {
       domainName: cloudfrontDistribution.domainName,
     });
 
-    const helloLambda = new lambda.Function(this, "hello", {
-      code: new lambda.AssetCode("lib/lambda"),
-      handler: "users.hello",
-      runtime: lambda.Runtime.NODEJS_10_X,
-    });
+    const createLambda = (entity: string, method: string) =>
+      new lambda.Function(this, `${entity}-${method}`, {
+        code: new lambda.AssetCode("lib/lambda"),
+        handler: `${entity}.${method}`,
+        runtime: lambda.Runtime.NODEJS_10_X,
+      });
+
+    const createLambdaIntegration = (entity: string, method: string) =>
+      new apigateway.LambdaIntegration(createLambda(entity, method));
 
     const api = new apigateway.RestApi(this, "Api", {
       deployOptions: {
@@ -104,7 +108,13 @@ export class ServerlessApplicationStack extends cdk.Stack {
       restApiName: `${organization}-${appId}-${stage}`,
     });
 
-    const items = api.root.addResource("users");
-    items.addMethod("GET", new apigateway.LambdaIntegration(helloLambda));
+    const users = api.root.addResource("users");
+    users.addMethod("GET", createLambdaIntegration("users", "getAll"));
+    users.addMethod("POST", createLambdaIntegration("users", "create"));
+
+    const singleUser = users.addResource("{id}");
+    singleUser.addMethod("GET", createLambdaIntegration("users", "getOne"));
+    singleUser.addMethod("PATCH", createLambdaIntegration("users", "update"));
+    singleUser.addMethod("DELETE", createLambdaIntegration("users", "remove"));
   }
 }
