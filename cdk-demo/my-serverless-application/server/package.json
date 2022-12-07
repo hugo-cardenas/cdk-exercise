@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.50",
-    "serverless": "^1.77.1",
+    "serverless": "^3.25.1",
     "serverless-plugin-typescript": "^1.1.9",
     "typescript": "^3.9.5"
   }
